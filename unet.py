@@ -9,12 +9,14 @@ import torch.nn.functional as F
 class BasicBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(BasicBlock, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1)
         self.norm1 = nn.BatchNorm2d(num_features=out_channels)
         self.norm2 = nn.BatchNorm2d(num_features=out_channels)
 
     def forward(self, x):
-        c = F.elu(self.conv1(x))
-        c = F.elu(self.conv2(c))
+        c = F.elu(self.norm1(self.conv1(x)))
+        c = F.elu(self.norm2(self.conv2(c)))
         return c
 
 class Down(nn.Module):
